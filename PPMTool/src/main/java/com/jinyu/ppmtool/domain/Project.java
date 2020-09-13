@@ -1,7 +1,10 @@
 package com.jinyu.ppmtool.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 // @Entity: 对实体注释
@@ -14,16 +17,30 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // @NotBlank：只能作用在String上，不能为null，而且调用trim()后，长度必须大于0
+    // validation 验证
+    // @NotBlank：验证注解的元素值不为空（不为null、去除首位空格后长度为0），
+    // 不同于@NotEmpty，@NotBlank只应用于字符串且在比较时会去除字符串的空格
     @NotBlank(message = "Project name is required")
     private String projectName;
+
     @NotBlank(message = "Project Identifier is required")
+    // @Size: 限制字符长度必须在min到max之间
+    @Size(min = 4, max = 5, message = "Please use 4 to 5 characters")
+    // @Column: 用来标识实体类中属性与数据表中字段的对应关系
+    @Column(updatable = false, unique = true)
     private String projectIdentifier;
+
+    @NotBlank(message = "Project description is required")
     private String description;
+
+    @JsonFormat(pattern = "yyyy-mm-dd")
     private Date start_date;
+    @JsonFormat(pattern = "yyyy-mm-dd")
     private Date end_date;
 
+    @JsonFormat(pattern = "yyyy-mm-dd")
     private Date created_At;
+    @JsonFormat(pattern = "yyyy-mm-dd")
     private Date updated_At;
 
     public Project() {
