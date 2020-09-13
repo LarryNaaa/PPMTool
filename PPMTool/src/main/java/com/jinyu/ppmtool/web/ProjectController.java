@@ -1,6 +1,7 @@
 package com.jinyu.ppmtool.web;
 
 import com.jinyu.ppmtool.domain.Project;
+import com.jinyu.ppmtool.services.MapValidationErrorService;
 import com.jinyu.ppmtool.services.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,9 @@ public class ProjectController {
     @Autowired
     private ProjectService projectService;
 
+    @Autowired
+    private MapValidationErrorService mapValidationErrorService;
+
     // 使用POSTMAN测试！！！
     /**
      * create a new project
@@ -46,18 +50,9 @@ public class ProjectController {
     // Java泛型（Generic Type）
     public ResponseEntity<?> createNewProject(@Valid @RequestBody Project project, BindingResult result){
 
-        // 返回JSON格式的Validation信息，方便前端React使用
-        if(result.hasErrors()){
-            // return new ResponseEntity<String>("Invalid Project Object", HttpStatus.BAD_REQUEST);
-
-            // use a map to store error
-            Map<String, String> errorMap = new HashMap<>();
-
-            for(FieldError error : result.getFieldErrors()){
-                errorMap.put(error.getField(), error.getDefaultMessage());
-            }
-            return new ResponseEntity<Map<String, String>>(errorMap, HttpStatus.BAD_REQUEST);
-        }
+        // Validation
+        ResponseEntity<?> errorMap = mapValidationErrorService.MapValidationService(result);
+        if(errorMap != null) return errorMap;
 
         Project project1 = projectService.saveOrUpdateProject(project);
         // ResponseEntity可以定义返回的HttpStatus（状态码）和HttpHeaders（消息头：请求头和响应头）
