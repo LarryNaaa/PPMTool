@@ -6,12 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 // 相当于@Controller+@ResponseBody两个注解的结合，
 // 返回json数据不需要在方法前面加@ResponseBody注解了，
@@ -42,8 +46,17 @@ public class ProjectController {
     // Java泛型（Generic Type）
     public ResponseEntity<?> createNewProject(@Valid @RequestBody Project project, BindingResult result){
 
+        // 返回JSON格式的Validation信息，方便前端React使用
         if(result.hasErrors()){
-            return new ResponseEntity<String>("Invalid Project Object", HttpStatus.BAD_REQUEST);
+            // return new ResponseEntity<String>("Invalid Project Object", HttpStatus.BAD_REQUEST);
+
+            // use a map to store error
+            Map<String, String> errorMap = new HashMap<>();
+
+            for(FieldError error : result.getFieldErrors()){
+                errorMap.put(error.getField(), error.getDefaultMessage());
+            }
+            return new ResponseEntity<Map<String, String>>(errorMap, HttpStatus.BAD_REQUEST);
         }
 
         Project project1 = projectService.saveOrUpdateProject(project);
