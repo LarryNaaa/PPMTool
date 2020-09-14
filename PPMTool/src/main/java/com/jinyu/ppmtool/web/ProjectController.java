@@ -7,21 +7,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-// 相当于@Controller+@ResponseBody两个注解的结合，
-// 返回json数据不需要在方法前面加@ResponseBody注解了，
-// 但使用@RestController这个注解，就不能返回jsp,html页面，视图解析器无法解析jsp,html页面
+/**
+ * @Controller和@RestController: Web控制层: 导入service层，调用service方法，
+ *                                         controller通过接受前端传来的参数进行业务操作，
+ *                                         在返回一个制定的路径或数据表。
+ *
+ * @RestController 该注解的作用将结果以jason的格式返回
+ *                 相当于@Controller+@ResponseBody两个注解的结合，
+ *                 返回json数据不需要在方法前面加@ResponseBody注解了，
+ *                 但使用@RestController这个注解，就不能返回jsp,html页面，
+ *                 视图解析器无法解析jsp,html页面.
+ *
+ * @RequestMapping RequestMapping用来和http请求进行交互
+ *                 用于映射url到控制器类的一个特定处理程序方法。
+ *                 可用于方法或者类上面。也就是可以通过url找到对应的方法。
+ */
+
 @RestController
-
-// 用于映射url到控制器类的一个特定处理程序方法。
-// 可用于方法或者类上面。也就是可以通过url找到对应的方法。
 @RequestMapping("/api/project")
 public class ProjectController {
 

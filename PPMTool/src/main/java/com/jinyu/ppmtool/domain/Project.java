@@ -7,13 +7,19 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.Date;
 
-// @Entity: 对实体注释
+/**
+ * @Entity: 实体层: 存放的是实体类，属性值与数据库值保持一致，实现 setter 和 getter 方法。
+ *          使用@Entity进行实体类的持久化操作，当JPA检测到我们的实体类当中有
+ *          @Entity 注解的时候，会在数据库中生成对应的表结构信息。
+ *          实体类是属性对象，用于供给其他层引用，该层的属性往往和数据库的表结构各个字段相同
+ */
 @Entity
 public class Project {
 
     // @Id: 声明此属性为主键。该属性值可以通过应该自身创建
     @Id
     // @GeneratedValue: 指定主键的生成策略
+    // IDENTITY：主键由数据库自动生成（主要是自动增长型）
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

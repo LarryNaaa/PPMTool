@@ -6,6 +6,9 @@ import com.jinyu.ppmtool.repositories.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * @Service 业务逻辑层: 存放业务逻辑处理，不直接对数据库进行操作，有接口和接口实现类，提供 controller 层调用方法。
+ */
 @Service
 public class ProjectService {
 
