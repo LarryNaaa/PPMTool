@@ -22,9 +22,21 @@ import javax.validation.Valid;
  *                 但使用@RestController这个注解，就不能返回jsp,html页面，
  *                 视图解析器无法解析jsp,html页面.
  *
- * @RequestMapping RequestMapping用来和http请求进行交互
+ * @RequestMapping RequestMapping用来和http请求进行交互, 当前台界面调用Controller处理数据时候告诉控制器怎么操作
  *                 用于映射url到控制器类的一个特定处理程序方法。
  *                 可用于方法或者类上面。也就是可以通过url找到对应的方法。
+ *
+ * @GetMapping @RequestMapping(method = RequestMethod.GET)的简写
+ *             作用：对应查询，表明是一个查询URL映射
+ *
+ * @PostMapping @RequestMapping(method = RequestMethod.POST)的简写
+ *              作用：对应增加，表明是一个增加URL映射
+ *
+ * @DeleteMapping @RequestMapping(method = RequestMethod.DELETE)的简写
+ *                作用：对应删除，表明是一个删除URL映射
+ *
+ * @PutMapping @RequestMapping(method = RequestMethod.PUT)的简写
+ *             作用：对应更新，表明是一个更新URL映射
  */
 
 @RestController
@@ -41,15 +53,13 @@ public class ProjectController {
     /**
      * create a new project
      * 使用@Valid+BindingResult进行controller参数校验:
-     * @param project @Valid: 可以实现数据的验证，你可以定义实体，在实体的属性上添加校验规则，而在API接收数据时添加。
+     * @param project @Valid: 可以实现数据的验证，可以定义实体，在实体的属性上添加校验规则，而在API接收数据时添加。
      *                @RequestBody: 主要用来接收前端传递给后端的json字符串中的数据的(请求体中的数据的),
      *                GET方式无请求体，所以使用@RequestBody接收数据时，前端不能使用GET方式提交数据，而是用POST方式进行提交。
      * @param result BindingResult: 用于对前端传进来的参数进行校验，省去了大量的逻辑判断操作
      * @return
      */
-    // @postMapping = @requestMapping(method = RequestMethod.POST)
     @PostMapping("")
-
     // Java泛型（Generic Type）
     public ResponseEntity<?> createNewProject(@Valid @RequestBody Project project, BindingResult result){
 
@@ -83,6 +93,11 @@ public class ProjectController {
         return projectService.findAllProjects();
     }
 
+    /**
+     * delete project by projectId
+     * @param projectId
+     * @return
+     */
     @DeleteMapping("/{projectId}")
     public ResponseEntity<?> deleteProject(@PathVariable String projectId){
         projectService.deleteProjectByIdentifier(projectId);
