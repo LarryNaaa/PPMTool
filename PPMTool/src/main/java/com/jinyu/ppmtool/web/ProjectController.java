@@ -37,10 +37,22 @@ import javax.validation.Valid;
  *
  * @PutMapping @RequestMapping(method = RequestMethod.PUT)的简写
  *             作用：对应更新，表明是一个更新URL映射
+ *
+ * @CrossOrigin 解决跨域问题，
+ *              出于安全原因，浏览器禁止Ajax调用驻留在当前原点之外的资源。
+ *              例如，当你在一个标签中检查你的银行账户时，
+ *              你可以在另一个选项卡上拥有EVILL网站。
+ *              来自EVILL的脚本不能够对你的银行API做出Ajax请求（从你的帐户中取出钱！）
+ *              使用您的凭据。
+ *
+ * 　　         跨源资源共享（CORS）是由大多数浏览器实现的W3C规范，
+ *             允许您灵活地指定什么样的跨域请求被授权，
+ *             而不是使用一些不太安全和不太强大的策略，如IFRAME或JSONP。
  */
 
 @RestController
 @RequestMapping("/api/project")
+@CrossOrigin
 public class ProjectController {
 
     @Autowired
