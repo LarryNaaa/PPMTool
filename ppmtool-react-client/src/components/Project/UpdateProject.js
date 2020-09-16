@@ -24,6 +24,7 @@ class UpdateProject extends Component {
   }
 
   // lifecycle hook
+  // 已加载组件收到新的参数时调用
   componentWillReceiveProps(nextProps) {
     if (nextProps.errors) {
       this.setState({ errors: nextProps.errors });
@@ -48,6 +49,9 @@ class UpdateProject extends Component {
     });
   }
 
+  // Mounting：已插入真实 DOM
+  // Updating：正在被重新渲染
+  // Unmounting：已移出真实 DOM
   componentDidMount() {
     const { id } = this.props.match.params;
     this.props.getProject(id, this.props.history);
@@ -167,10 +171,24 @@ UpdateProject.propTypes = {
   errors: PropTypes.object.isRequired,
 };
 
+// mapStateToProps是一个函数。它的作用就是像它的名字那样，
+// 建立一个从（外部的）state对象到（UI 组件的）props对象的映射关系。
 const mapStateToProps = (state) => ({
   project: state.project.project,
   errors: state.errors,
 });
+
+// React-Redux 提供connect方法，用于从 UI 组件生成容器组件。
+// connect的意思，就是将这两种组件连起来。
+// connect方法接受两个参数：mapStateToProps和mapDispatchToProps。
+// 它们定义了 UI 组件的业务逻辑。
+// 前者负责输入逻辑，即将state映射到 UI 组件的参数（props），
+// 后者负责输出逻辑，即将用户对 UI 组件的操作映射成 Action。
+
+// mapDispatchToProps是connect函数的第二个参数，
+// 用来建立 UI 组件的参数到store.dispatch方法的映射。
+// 也就是说，它定义了哪些用户的操作应该当作 Action，传给 Store。
+// 它可以是一个函数，也可以是一个对象。
 
 export default connect(mapStateToProps, { getProject, createProject })(
   UpdateProject
