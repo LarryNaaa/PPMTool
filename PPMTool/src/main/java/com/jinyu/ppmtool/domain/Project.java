@@ -17,7 +17,7 @@ import java.util.Date;
 @Entity
 public class Project {
 
-    // @Id: 声明此属性为主键。该属性值可以通过应该自身创建
+    // @Id: 声明此属性为主键。该属性值可以通过自身创建
     @Id
     // @GeneratedValue: 指定主键的生成策略
     // IDENTITY：主键由数据库自动生成（主要是自动增长型）
