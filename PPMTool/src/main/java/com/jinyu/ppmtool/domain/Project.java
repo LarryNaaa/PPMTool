@@ -50,6 +50,24 @@ public class Project {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date updated_At;
 
+    /*
+    注解@OneToOne的属性：
+    cascade:关联属性，这个属性定义了当前类对象操作了之后，级联对象的操作。
+    本例中定义了：CascadeType.ALL，当前类增删改查改变之后，关联类跟着增删改查。
+
+    fetch属性：FetchType类型的属性。可选择项包括：FetchType.EAGER 和FetchType.LAZY。
+    FetchType.EAGER表示关系类(本例是OrderItem类)在主类加载的时候同时加载，
+    FetchType.LAZY表示关系类在被访问时才加载。默认值是FetchType.LAZY。
+
+    mappedBy:拥有关联关系的域，如果关系是单向的就不需要，双向关系表，
+    那么拥有关系的这一方有建立、解除和更新与另一方关系的能力，
+    而另一方没有，只能被动管理，这个属性被定义在关系的被拥有方。
+    双向@OneToOne，双向@OneToMany，双向@ManyToMany。
+     */
+    // OneToOne with Backlog
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "project")
+    private Backlog backlog;
+
     public Project() {
     }
 
@@ -115,6 +133,14 @@ public class Project {
 
     public void setUpdated_At(Date updated_At) {
         this.updated_At = updated_At;
+    }
+
+    public Backlog getBacklog() {
+        return backlog;
+    }
+
+    public void setBacklog(Backlog backlog) {
+        this.backlog = backlog;
     }
 
     @PrePersist
