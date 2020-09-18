@@ -9,7 +9,7 @@ import { GET_ERRORS, GET_PROJECTS, GET_PROJECT, DELETE_PROJECT } from "./types";
 // store.dispatch()是 View 发出 Action 的唯一方法
 export const createProject = (project, history) => async (dispatch) => {
   try {
-    const res = await axios.post("/api/project", project);
+    await axios.post("/api/project", project);
     history.push("/dashboard");
     // reset error
     dispatch({
