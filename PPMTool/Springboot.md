@@ -2,7 +2,6 @@
 ### Spring框架基本实现思路
 1. 创建数据库。
 2. 创建实体类Entity，与数据库中的表项一一对应。
-实体层: 存放的是实体类，属性值与数据库值保持一致，实现 setter 和 getter 方法。
 3. 创建接口，同于连接数据库与项目功能。
 4. 编写mapper.xml文件（Mybatis）定义关联SQL语言与接口操作。
 5. 创建Service类，为控制层提供服务。可以单独创建接口实现解耦。
@@ -12,7 +11,19 @@
 ### Spring Data JPA
 **Java Persistence API即Java持久化API，SpringData JPA，即Spring对JPA的封装**
 
-#### 实体
+优点：
+
+1. 直接可以通过实体类与表、实体属性与表的字段之间的关联，自动为建表
+      
+2. 使用时不需要再考虑使用的是何种数据库，也基本不需要写sql语句
+
+缺点：
+
+JPA将ORM封装的太完善了，使得我们操作数据库的灵活性大大降低了。
+比如我们如果想要实现多表关联的查询、多条件查询等等，都会变得更加复杂
+
+#### Entity
+**实体层: 存放的是实体类，属性值与数据库值保持一致，实现 setter 和 getter 方法。**
 ```java
 @Entity @MappedSuperclass 
 @Table(name)
@@ -110,4 +121,109 @@ precision属性和scale属性表示精度，当字段类型为double时，precis
 
 
 @OrderBy同样使用在属性上，表示@oneToMany以及@ManyToMany，即一对多或者多对多时，字段的排序方式.
+
+#### Validation 验证
+1.在相关的实体类的相关字段添加用于充当验证条件的注解
+
+Validation相关注解:
+
+@Null 限制只能为null
+
+@NotNull 限制必须不为null
+
+@AssertFalse 限制必须为false
+
+@AssertTrue 限制必须为true
+
+@DecimalMax(value) 限制必须为一个不大于指定值的数字
+
+@DecimalMin(value) 限制必须为一个不小于指定值的数字
+
+@Digits(integer,fraction) 限制必须为一个小数，且整数部分的位数不能超过integer，小数部分的位数不能超过fraction
+
+@Future 限制必须是一个将来的日期
+
+@Max(value) 限制必须为一个不大于指定值的数字
+
+@Min(value) 限制必须为一个不小于指定值的数字
+
+@Past 限制必须是一个过去的日期
+
+@Pattern(value) 限制必须符合指定的正则表达式
+
+@Size(max,min) 限制字符长度必须在min到max之间
+
+@Past 验证注解的元素值（日期类型）比当前时间早
+
+@NotEmpty 验证注解的元素值不为null且不为空（字符串长度不为0、集合大小不为0）
+
+@NotBlank 验证注解的元素值不为空（不为null、去除首位空格后长度为0），不同于@NotEmpty，@NotBlank只应用于字符串且在比较时会去除字符串的空格
+
+@Email 验证注解的元素值是Email，也可以通过正则表达式和flag指定自定义的email格式
+
+2.在controller层的方法的要校验的参数上添加@Valid注解
+
+3.编写全局异常捕捉类
+
+@ControllerAdvice 全局异常处理
+
+@ExceptionHandler 注解用来指明异常的处理类型
+
+### Repository
+**数据访问层: 对数据库进行持久化操作，他的方法使针对数据库操作的，基本上用的就是增删改查**
+
+加上@EnableJpaRepositories，即可开启JPA的repository的支持，
+Spring 就会发现以下repository的扩展：
+
+> CrudRepository<T, ID> 提供基本增删改查方法
+
+> PagingAndSortingRepository<T, ID>用于分页、排序方法
+
+> JpaRepository<T, ID> 用于持久化等方法
+
+如果使用@Repository注解，则需继承以上三个类。
+
+#### 查询方式
+查询方法，默认只提供了查询所有或者按照ID查询的方法。
+
+若想要查询更丰富的内容，比如按照某个条件查询、统计记录数、排序展示、
+多条件查询、查询第一条或最后一条等，这么多复杂的场景，依旧不需要写sql，
+我们只需要在repository中定义如下格式的方法就可以轻而易举的实现:
+```java
+find…By… / read…By… / query…By… / get…By…
+count…By…
+…OrderBy…[Asc / Desc]
+And / Or / IgnoreCase
+Top / First / Distinct 
+```
+
+### Service
+**业务逻辑层: 存放业务逻辑处理，不直接对数据库进行操作，有接口和接口实现类，提供 controller 层调用方法。**
+### Controller
+**Web控制层: 导入service层，调用service方法，controller通过接受前端传来的参数进行业务操作，在返回一个制定的路径或数据表。**
+
+@RestController 该注解的作用将结果以jason的格式返回
+相当于@Controller+@ResponseBody两个注解的结合。
+
+@RequestMapping 用来和http请求进行交互, 当前台界面调用Controller处理数据时候告诉控制器怎么操作。
+
+@GetMapping @RequestMapping(method = RequestMethod.GET)的简写, 作用：对应查询，表明是一个查询URL映射
+
+@PostMapping @RequestMapping(method = RequestMethod.POST)的简写, 作用：对应增加，表明是一个增加URL映射
+ 
+@DeleteMapping @RequestMapping(method = RequestMethod.DELETE)的简写, 作用：对应删除，表明是一个删除URL映射
+
+@PutMapping @RequestMapping(method = RequestMethod.PUT)的简写, 作用：对应更新，表明是一个更新URL映射
+
+@PatchMapping 是对@PutMapping的补充，表示一个局部更新，后端只更新收到的字段。
+
+@CrossOrigin 解决跨域问题
+
+@RequestBody: 
+主要用来接收前端传递给后端的json字符串中的数据的(请求体中的数据的), 
+GET方式无请求体，所以使用@RequestBody接收数据时，
+前端不能使用GET方式提交数据，而是用POST方式进行提交。
+
+@PathVariable: 可以将 URL 中占位符参数绑定到控制器处理方法的入参中：
+URL 中的 {xxx} 占位符可以通过@PathVariable(“xxx“) 绑定到操作方法的入参中。
 
